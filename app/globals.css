@@ -11,8 +11,6 @@ body {
   font-family: "Poppins", serif;
 }
 
-
-
 /* ========================================== TAILWIND STYLES */
 @layer base {
   :root {
@@ -270,6 +268,10 @@ body {
   color: #fff;
 }
 
+.lb-comment-body p {
+  color: #fff;
+}
+
 .lb-composer-action {
   padding: 8px;
 }
@@ -287,6 +289,10 @@ body {
 .lb-composer-suggestions-list-item,
 .lb-inbox-notification-date,
 .lb-comment-author {
+  color: #b4c6ee;
+}
+
+.lb-comment-date span {
   color: #b4c6ee;
 }
 
@@ -310,4 +316,17 @@ body {
 
 .lb-elevation {
   background: #0f1c34;
+}
+
+.lb-composer-editor-container span {
+  color: #b4c6ee;
+}
+
+.lb-icon {
+  color: #b4c6ee;
+}
+
+.lb-composer-editor,
+.lb-composer-footer {
+  background-color: #0f1c34;
 }

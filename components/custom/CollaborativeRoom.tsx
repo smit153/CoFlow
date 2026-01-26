@@ -9,12 +9,15 @@ import Loader from "./Loader";
 import { useRef, useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
+import { metadata } from "@/app/layout";
+import { updateDocument } from "@/lib/actions/room.actions";
 
 const CollaborativeRoom = ({
   roomId,
   roomMetadata,
+  users,
+  currentUserType,
 }: CollaborativeRoomProps) => {
-  const currentUserType = "editor"; // TODO: get user type from context
   const [documentTitle, setDocumentTitle] = useState(roomMetadata.title);
   const [loading, setLoading] = useState(false);
   const [editing, setEditing] = useState(false);
@@ -26,6 +29,19 @@ const CollaborativeRoom = ({
     e: React.KeyboardEvent<HTMLInputElement>
   ) => {
     if (e.key === "Enter") {
+      setLoading(true);
+      try {
+        if (documentTitle !== roomMetadata.title) {
+          const updatedDocument = await updateDocument(roomId, documentTitle);
+
+          if (updatedDocument) {
+            setEditing(false);
+          }
+        }
+      } catch (error) {
+        console.error(`Failed to update title: ${error}`);
+      }
+      setLoading(false);
     }
   };
 
@@ -36,6 +52,7 @@ const CollaborativeRoom = ({
         !containerRef.current.contains(e.target as Node)
       ) {
         setEditing(false);
+        updateDocument(roomId, documentTitle);
       }
     };
 
@@ -44,7 +61,13 @@ const CollaborativeRoom = ({
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, []);
+  }, [roomId, documentTitle]);
+
+  useEffect(() => {
+    if (editing && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [editing]);
 
   return (
     <RoomProvider id={roomId}>
@@ -96,7 +119,7 @@ const CollaborativeRoom = ({
               </SignedIn>
             </div>
           </Header>
-          <Editor />
+          <Editor roomId={roomId} currentUserType={currentUserType} />
         </div>
       </ClientSideSuspense>
     </RoomProvider>

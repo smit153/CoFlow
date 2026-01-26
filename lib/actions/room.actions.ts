@@ -4,6 +4,7 @@
  * This module provides functions to manage collaborative documents using Liveblocks.
  * - `CreateDocument`: Creates a new document (room) with metadata and user permissions.
  * - `getDocument`: Retrieves a document (room) and verifies access for a specific user.
+ * - `updateDocument`: Updates the metadata of a document (room) with a new title.
  */
 
 import { nanoid } from "nanoid";
@@ -79,5 +80,31 @@ export const getDocument = async ({
   } catch (error) {
     // Step 5: Handle errors and log them to the console
     console.log(`Error happened while getting a room: ${error}`);
+  }
+};
+
+export const updateDocument = async (roomId: string, title: string) => {
+  try {
+    const updateRoom = await liveblocks.updateRoom(roomId, {
+      metadata: {
+        title,
+      },
+    });
+    revalidatePath(`/documents/${roomId}`);
+    return parseStringify(updateRoom);
+  } catch (error) {
+    console.error(`Failed to update title: ${error}`);
+  }
+};
+
+export const getDocuments = async (email: string) => {
+  try {
+    // Step 1: Fetch the room details from Liveblocks
+    const rooms = await liveblocks.getRooms({ userId: email });
+
+    return parseStringify(rooms);
+  } catch (error) {
+    // Step 5: Handle errors and log them to the console
+    console.log(`Error happened while getting a rooms: ${error}`);
   }
 };
