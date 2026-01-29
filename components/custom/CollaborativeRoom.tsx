@@ -9,7 +9,6 @@ import Loader from "./Loader";
 import { useRef, useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
-import { metadata } from "@/app/layout";
 import { updateDocument } from "@/lib/actions/room.actions";
 import ShareModal from "./ShareModal";
 
